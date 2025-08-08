@@ -15,10 +15,12 @@
 sys_libs =
 if ($cxx.target.class != 'windows')
 {
-  sys_libs += -llapack -ldl -lm
+  if ($cxx.target.class == 'macos')
+    sys_libs += -framework Accelerate # Lapack, BLAS
+  else
+    sys_libs += -llapack -pthread -lrt
 
-  if ($cxx.target.class != 'macos')
-    sys_libs += -pthread -lrt
+  sys_libs += -ldl -lm
 }
 
 lib{SimTKcommon}: cxx.libs += $sys_libs
