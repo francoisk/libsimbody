@@ -23,9 +23,8 @@ if ($cxx.target.class != 'windows')
   sys_libs += -ldl -lm
 }
 
-lib{SimTKcommon}: cxx.libs += $sys_libs
-
-lib{SimTKmath}: lib{SimTKcommon}
+lib{SimTKcommon}:  cxx.libs += $sys_libs
+lib{SimTKmath}:    lib{SimTKcommon}
 lib{SimTKsimbody}: lib{SimTKcommon SimTKmath}
 
 # SimTKcommon/ source subdirectories.
@@ -47,6 +46,9 @@ math_dirs = LinearAlgebra       \
             Geometry
 
 # Simbody/ source subdirectories.
+#
+# Note that the Visualizer directory is only the library code, not the
+# executable code.
 #
 simbody_dirs = Visualizer
 
@@ -93,14 +95,14 @@ SimTKmath/obja{*}: cc.poptions += -DSimTK_SIMMATH_BUILDING_STATIC_LIBRARY
 
 # Build options: SimTKsimbody
 #
-# Note that the various path/directory macros are only used to launch the
-# Visualizer executable which is not supported so just use fake values for the
-# sake of simplicity (and to flush out problems early).
-#
 simbody_includes = "-I$src_base/Simbody/include"
 for d: $simbody_dirs
   simbody_includes += "-I$src_base/Simbody/$d/include"
 
+# Note that the various path/directory macros are only used to launch the
+# Visualizer executable which is not supported so just use fake values for the
+# sake of simplicity (and to flush out problems early).
+#
 Simbody/obj{*}:                                                                 \
   cxx.poptions += $simbody_includes                                             \
                   -DSimTK_SIMBODY_AUTHORS=\"Michael.Sherman_Peter.Eastman\"     \
@@ -173,16 +175,16 @@ else
 #
 # <srcdir>/include/h          -> include/simbody/
 # <srcdir>/<subdir>/include/h -> include/simbody/
-
+#
 # Top headers
 #
 # <srcdir>/include/<incdir>/h          -> include/simbody/<incdir>/
 # <srcdir>/<subdir>/include/<incdir>/h -> include/simbody/<incdir>/
-
+#
 # Internal headers
 #
-# <srcdir>/include/<incdir>/internal/h         -> include/simbody/<incdir>/internal/
-# <srcdir>/<subdir>include/<incdir>/internal/h -> include/simbody/<incdir>/internal/
+# <srcdir>/include/<incdir>/internal/h          -> include/simbody/<incdir>/internal/
+# <srcdir>/<subdir>/include/<incdir>/internal/h -> include/simbody/<incdir>/internal/
 #
 {hxx h}{*}: install = false # Default to not installed
 
