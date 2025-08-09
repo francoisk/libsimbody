@@ -93,12 +93,10 @@ libs{libblas.dll}: libs{libgcc_s_sjlj-1.dll     \
                         libgfortran-3.dll       \
                         libquadmath-0.dll}
 
-[rule_hint=cxx] libs{windows_meta}: libs{liblapack.dll libblas.dll}
+lib{SimTKcommon}: libs{liblapack.dll libblas.dll}: include = $windows
 
-libs{windows_meta}: libi{liblapack.dll.lib libblas.dll.lib}: \
+libs{SimTKcommon}: libi{liblapack.dll.lib libblas.dll.lib}: \
   include = ($windows ? adhoc : false)
-
-lib{SimTKcommon}: libs{windows_meta}: include = $windows
 
 # SimTKcommon/ source subdirectories.
 #
@@ -217,7 +215,7 @@ else
 lib{SimTKcommon}: cxx.export.poptions = $common_includes
 
 if $windows
-  lib{SimTKcommon}: cxx.export.libs += libs{windows_meta}
+  lib{SimTKcommon}: cxx.export.libs += libs{liblapack.dll libblas.dll}
 else
   lib{SimTKcommon}: cxx.export.libs += $sys_libs
 
@@ -248,8 +246,6 @@ libs{liblapack.dll}: cxx.export.libs = libs{libblas.dll}
 libs{libblas.dll}:   cxx.export.libs = libs{libgcc_s_sjlj-1.dll \
                                             libgfortran-3.dll   \
                                             libquadmath-0.dll}
-
-libs{windows_meta}: cxx.export.libs = libs{liblapack.dll libblas.dll}
 
 # For pre-releases use the complete version to make sure they cannot
 # be used in place of another pre-release or the final version. See
