@@ -120,6 +120,25 @@ Simbody/objs{*}: cxx.poptions += -DSimTK_SIMBODY_BUILDING_SHARED_LIBRARY        
 
 Simbody/obja{*}: cxx.poptions += -DSimTK_SIMBODY_BUILDING_STATIC_LIBRARY
 
+# Disable warnings about illegal UTF-8 characters (treated as errors on
+# Windows CI).
+#
+# Note that Geodesic.cpp and ContactGeometry.cpp include the errant code which
+# is in GeodesicEquations.h.
+#
+if ($cxx.class == 'msvc')
+{
+  SimTKmath/Geometry/src/obj{CollisionDetectionAlgorithm        \
+                             Geodesic                           \
+                             ContactGeometry}: cxx.coptions += /wd4828
+}
+else
+{
+  SimTKmath/Geometry/src/obj{CollisionDetectionAlgorithm        \
+                             Geodesic                           \
+                             ContactGeometry}: cxx.coptions += -Wno-invalid-utf8
+}
+
 # Export options: SimTKcommon
 #
 lib{SimTKcommon}: cxx.export.poptions = $common_includes
